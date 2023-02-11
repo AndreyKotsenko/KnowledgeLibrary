@@ -326,3 +326,50 @@ fun operate(n1: Int, n2: Int, op: Operation): Int{
 }
 ```
 Функция operate() принимает два числа - операнды операции и тип операции в виде перечисления Operation. И в зависимоси от значения перечисления возвращает либо сумму, либо разность, либо произведение двух чисел.
+
+### Запрет переопределения
+В это же время иногда бывает необходимо запретить дальнейшее переопределение функции в классах-наследниках. Для этого применяется ключевое слово **final**:
+```
+open class Person(val name: String){
+    open fun display(){
+        println("Name: $name")
+    }
+}
+open class Employee(name: String, val company: String): Person(name){
+ 
+    final override fun display() {
+        println("Name: $name    Company: $company")
+    }
+}
+class Manager(name: String, company: String):Employee(name, company){
+    // теперь функцию нельзя переопределить
+    /*override fun display() {
+        println("Name: $name Company: $company  Position: Manager")
+    }*/
+}
+```
+
+### Обращение к реализации из базового класса
+С помощью ключевого слова super в производном классе можно обращаться к реализации из базового класса.
+```
+open class Person(val name: String){
+ 
+    open val fullInfo: String
+        get() = "Name: $name"
+ 
+    open fun display(){
+        println("Name: $name")
+    }
+}
+open class Employee(name: String, val company: String): Person(name){
+ 
+    override val fullInfo: String
+        get() = "${super.fullInfo} Company: $company"
+ 
+    final override fun display() {
+        super.display()
+        println("Company: $company")
+    }
+}
+```
+В данном случае производный класс Employee при переопределении свойства и функции применяет реализацию из базового класса Person. Например, через super.fullInfo возвращается значение свойства из базового класса (то есть значение свойства name), а с помощью вызова super.display() вызывается реализация функции display из класса Person.
